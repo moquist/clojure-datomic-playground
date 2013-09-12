@@ -10,7 +10,7 @@ See the (comment) in core.clj to run it from your REPL.
 
 Less helpfully (because the point is to look at the source), you could create an uberjar and execute it from the command line:
 
-    $ java -jar clojure-datomic-playground-0.1.0-STANDALONE.jar { sample-1-greta | sample-1-fred }
+    $ java -jar clojure-datomic-playground-0.1.0-SNAPSHOT-standalone.jar { sample-1-greta | sample-1-fred }
 
 ## License
 
