@@ -1,11 +1,12 @@
-;;;; This is a short, simple demo program that sets up a datomic:mem
-;;;; instance, transacts some schema into it, transacts some data into
-;;;; it, and queries it to get results.
-;;;; See the (comment) to run it from your REPL.
-;;;; Or create an uberjar and run:
-;;;;    $ java -jar clojure-datomic-playground.jar sample-1-greta
+(ns
+    ^{:author "Matt Oquist"
+      :doc "This is a motley collection of clojure code I wrote while learning to use datomic.
 
-(ns clojure-datomic-playground.core
+            See the (comment) in demo_mem.clj to run some demos from your REPL.
+
+            Or create an uberjar and run to make it go:
+                $ java -jar clojure-datomic-playground.jar sample-1-greta"}
+  clojure-datomic-playground.core
   (:require [datomic.api :as d :refer [db q]]
             [clojure-datomic-playground.demo-mem :as demo-mem])
   (:gen-class))
