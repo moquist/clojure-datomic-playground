@@ -8,22 +8,21 @@
                 $ java -jar clojure-datomic-playground.jar sample-1-greta"}
   clojure-datomic-playground.core
   (:require [datomic.api :as d :refer [db q]]
-            [clojure-datomic-playground.demo-mem :as demo-mem])
+            [clojure-datomic-playground.demo-mem :as d-m])
   (:gen-class))
 
 (defn -main
-  "Pass sample-1-greta or sample-1-fred on the command line to run a demo from the CLI."
   [cmd]
-  ;; work around dangerous default behaviour in Clojure
-  (alter-var-root #'*read-eval* (constantly false))
   ;; Nothing clever -- keepin' it short and clear.
   (cond
-   (= cmd "sample-1-greta") (demo-mem/demo demo-mem/sample-1 "Greta")
-   (= cmd "sample-1-fred") (demo-mem/demo demo-mem/sample-1 "Fred")
-   (= cmd "sample-2-galllivanting") (demo-mem/demo demo-mem/sample-2 "Gallivanting Off")
-   (= cmd "sample-2-business") (demo-mem/demo demo-mem/sample-2 "Aes Sedai Business 101")))
+   (= cmd "sample-1-greta") (d-m/demo d-m/sample-1 "Greta")
+   (= cmd "sample-1-fred") (d-m/demo d-m/sample-1 "Fred")
+   (= cmd "sample-2-galllivanting") (d-m/demo d-m/sample-2 "Gallivanting Off")
+   (= cmd "sample-2-business") (d-m/demo d-m/sample-2 "Aes Sedai Business 101")))
 
 (comment
+
+  ;; Walk down through a returned entity.
   (println
    (:teacher/name
     (first
@@ -33,8 +32,8 @@
                  (d/q '[:find ?e
                         :where [?e :classroom/display-name "Gallivanting Off"]]
                       (db conn))))))))
-  
 
+  ;; Do the same walk, a *little* cleaner, with threading.
   (->
    (d/entity (db conn)
              (ffirst
