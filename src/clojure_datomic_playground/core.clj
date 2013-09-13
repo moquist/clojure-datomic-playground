@@ -32,19 +32,29 @@
        (println attr)))
     results))
 
+(defn demo-schema!
+  "Install the sample schema"
+  [conn {schema :schema}]
+  (d/transact conn schema))
+
+(defn demo-data!
+  "Assert the sample data"
+  [conn {data :data}]
+  (d/transact conn data))
+
 (defn demo
   "Run a demo on the given sample data that:
    1. installs the sample schema
    2. asserts the sample data
-   3. queries datomic for the person with the specified query-name
-   4. prints all the attributes of the person(s) returned by the query
-   5. returns the results set"
-  [sample query-name]
+   3. queries datomic for the entities matching the specified query terms
+   4. prints all the attributes of the entities returned by the query
+   5. returns the results set."
+  [sample & query-terms]
   (let [conn (reset-db)]
-    (d/transact conn (:schema sample))
-    (d/transact conn (:data sample))
-    (p-query conn `[:find ?person-entity
-                    :where [?person-entity :person/name ~query-name]])))
+    (demo-schema! conn sample)
+    (demo-data! conn sample)
+    (p-query conn
+             (apply (:query sample) query-terms))))
 
 (def sample-1
   {:schema [{:db/id #db/id [:db.part/db]
