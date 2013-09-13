@@ -1,6 +1,6 @@
 (ns
     ^{:author "Matt Oquist",
-      :doc "A record of some clojure I wrote to play around with datomic.
+      :doc "A record of some clojure I wrote to play around with datomic:mem.
 
       The code in this file uses an in-memory database. There are a
       couple functions to import and query some simple data."}
@@ -79,7 +79,8 @@
               :where [?person-entity :person/name ~query-term]])})
 
 (def sample-2
-  {:schema [{:db/id #db/id [:db.part/db]
+  {:schema [;; classroom entity
+            {:db/id #db/id [:db.part/db]
              :db/ident :classroom/display-name
              :db/valueType :db.type/string
              :db/cardinality :db.cardinality/one
@@ -105,11 +106,13 @@
              :db.install/_attribute :db.part/db}
             {:db/id #db/id [:db.part/db]
              :db/ident :classroom/teacher
+             ;; a classroom can have 0 or many teachers
              :db/valueType :db.type/ref
              :db/cardinality :db.cardinality/many
              :db/doc "teacher"
              :db.install/_attribute :db.part/db}
 
+            ;; teacher entity
             {:db/id #db/id [:db.part/db]
              :db/ident :teacher/name
              :db/valueType :db.type/string
@@ -128,7 +131,9 @@
              :db/cardinality :db.cardinality/one
              :db/doc "teacher url"
              :db.install/_attribute :db.part/db}]
-   :data [{:db/id #db/id [:db.part/user -1]
+   :data [;; Note that we're asserting these teacher entities with
+          ;; temporary ID numbers that we can reference later.
+          {:db/id #db/id [:db.part/user -1]
            :teacher/name "Moiraine Damodred"
            :teacher/url "http://wot.wikia.com/wiki/Moiraine_Damodred"
            :teacher/email "mdamodred@one.source"}
@@ -145,6 +150,7 @@
            :classroom/display-name "Aes Sedai Business 101"
            :classroom/idstr "101"
            :classroom/version "v8"
+           ;; This class is taught by Moiraine and Nynaeve.
            :classroom/teacher [#db/id [:db.part/user -1] #db/id [:db.part/user -2]]
            :classroom/status "ACTIVE"}
           {:db/id #db/id [:db.part/user]
@@ -156,6 +162,8 @@
            :classroom/display-name "Gallivanting Off"
            :classroom/idstr "173829"
            :classroom/version "v3"
+           ;; This class is taught by Tam, but we didn't assert him
+           ;; above. Instead, we're nesting his assertion here.
            :classroom/teacher [{:db/id #db/id [:db.part/user]
                                 :teacher/name "Tam al'Thor"
                                 :teacher/url "http://wot.wikia.com/wiki/Tamlin_al'Thor"
@@ -172,7 +180,7 @@
   (demo sample-1 "Fred")
   (demo sample-2 "Gallivanting Off")
 
-  ;; test schemaand data loading but not query
+  ;; test schema and data loading but not query
   (doto (reset-db) (demo-schema! sample-2) (demo-data! sample-2))
 
   )
