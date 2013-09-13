@@ -153,7 +153,7 @@
            :classroom/version "v8"
            :classroom/status "ACTIVE"}
           {:db/id #db/id [:db.part/user]
-           :classroom/display-name "Galavanting Off"
+           :classroom/display-name "Gallivanting Off"
            :classroom/idstr "173829"
            :classroom/version "v3"
            :classroom/teacher [{:db/id #db/id [:db.part/user]
@@ -170,7 +170,7 @@
 (comment
   (demo sample-1 "Greta")
   (demo sample-1 "Fred")
-  (demo sample-2 "Galavanting Off")
+  (demo sample-2 "Gallivanting Off")
 
   ;; test schemaand data loading but not query
   (doto (reset-db) (demo-schema! sample-2) (demo-data! sample-2))

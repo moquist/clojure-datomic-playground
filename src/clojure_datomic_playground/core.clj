@@ -20,7 +20,7 @@
   (cond
    (= cmd "sample-1-greta") (demo-mem/demo demo-mem/sample-1 "Greta")
    (= cmd "sample-1-fred") (demo-mem/demo demo-mem/sample-1 "Fred")
-   (= cmd "sample-2-gallavanting") (demo-mem/demo demo-mem/sample-2 "Galavanting Off")
+   (= cmd "sample-2-galllivanting") (demo-mem/demo demo-mem/sample-2 "Gallivanting Off")
    (= cmd "sample-2-business") (demo-mem/demo demo-mem/sample-2 "Aes Sedai Business 101")))
 
 (comment
@@ -31,7 +31,7 @@
       (d/entity (db conn)
                 (ffirst
                  (d/q '[:find ?e
-                        :where [?e :classroom/display-name "Galavanting Off"]]
+                        :where [?e :classroom/display-name "Gallivanting Off"]]
                       (db conn))))))))
   
 
@@ -39,7 +39,7 @@
    (d/entity (db conn)
              (ffirst
               (d/q '[:find ?e
-                     :where [?e :classroom/display-name "Galavanting Off"]]
+                     :where [?e :classroom/display-name "Gallivanting Off"]]
                    (db conn))))
    :classroom/teacher
    first
