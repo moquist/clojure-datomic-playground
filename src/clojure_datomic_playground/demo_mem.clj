@@ -3,7 +3,14 @@
       :doc "A record of some clojure I wrote to play around with datomic:mem.
 
       The code in this file uses an in-memory database. There are a
-      couple functions to import and query some simple data."}
+      couple functions to import and query some simple data.
+
+      A couple things I learned before moving on from this code:
+      1. My queries embed search terms (e.g., \"Greta\") in the query
+         data structure. This then gets passed to d/q. Don't do it
+         this way. Instead, use the :in clause of a query to provide
+         search terms (as well as other values) to d/q.
+      2. p-query makes it impossible to do what I said in #1."}
     clojure-datomic-playground.demo-mem
   (:require [datomic.api :as d :refer [db q]]))
 
@@ -19,7 +26,10 @@
   (d/connect uri))
 
 (defn p-query
-  "Query datomic and print all the attributes of each returned entity."
+  "Query datomic and print all the attributes of each returned entity.
+   This is clumsy, but it does \"dump\" the attributes of an entity,
+   just so you can see them.
+   Returns the results of the query."
   [conn query]
   (println "Query results:")
   (let [db (db conn)
@@ -174,13 +184,52 @@
             `[:find ?e
               :where [?e :classroom/display-name ~name]])})
 
+(defn demo-reach1
+  "Assert the sample-2 data, fetch a classroom entity, and then reach
+   through the classroom entity to print the teacher's name."
+  []
+  (let [conn (reset-db)]
+    (doto conn
+      (demo-schema! sample-2)
+      (demo-data! sample-2))
+    (println
+     (:teacher/name
+      (first
+       (:classroom/teacher
+        (d/entity (db conn)
+                  (ffirst
+                   (d/q '[:find ?e
+                          :where [?e :classroom/display-name "Gallivanting Off"]]
+                        (db conn))))))))))
+
+(defn demo-reach2
+  "Same as demo-reach1, but slightly less ugly by way of thread-first.
+
+   Assert the sample-2 data, fetch a classroom entity, and then reach
+   through the classroom entity to print the teacher's name."
+  []
+  (let [conn (reset-db)]
+    (doto conn
+      (demo-schema! sample-2)
+      (demo-data! sample-2))
+    (->
+     (d/entity (db conn)
+               (ffirst
+                (d/q '[:find ?e
+                       :where [?e :classroom/display-name "Gallivanting Off"]]
+                     (db conn))))
+     :classroom/teacher
+     first
+     :teacher/name
+     println)))
 
 (comment
   (demo sample-1 "Greta")
   (demo sample-1 "Fred")
   (demo sample-2 "Gallivanting Off")
 
-  ;; test schema and data loading but not query
+  ;; test schema and data loading, but not query
   (doto (reset-db) (demo-schema! sample-2) (demo-data! sample-2))
+
 
   )

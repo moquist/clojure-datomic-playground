@@ -22,26 +22,4 @@
 
 (comment
 
-  ;; Walk down through a returned entity.
-  (println
-   (:teacher/name
-    (first
-     (:classroom/teacher
-      (d/entity (db conn)
-                (ffirst
-                 (d/q '[:find ?e
-                        :where [?e :classroom/display-name "Gallivanting Off"]]
-                      (db conn))))))))
-
-  ;; Do the same walk, a *little* cleaner, with threading.
-  (->
-   (d/entity (db conn)
-             (ffirst
-              (d/q '[:find ?e
-                     :where [?e :classroom/display-name "Gallivanting Off"]]
-                   (db conn))))
-   :classroom/teacher
-   first
-   :teacher/name
-   println)
   )
